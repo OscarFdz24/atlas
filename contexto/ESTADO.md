@@ -2,14 +2,14 @@
 
 ## ► SIGUIENTE PASO
 
-**El usuario tiene que ejecutar `gh auth login` a mano** (es interactivo, requiere navegador). Una
-vez autenticado: primer commit de la documentación, crear el repositorio público
-`OscarFdz24/atlas` y subirlo — pidiendo permiso para cada paso.
+**Montar el esqueleto del pipeline:** `uv init` con disposición `src/` en `pipeline/`, un `Makefile`
+y el flujo `ci.yml` mínimo. Después, la primera rebanada vertical: esperanza de vida, todos los
+países, desde la API del Banco Mundial hasta una página desplegada en Cloudflare Pages.
 
-Después: esqueleto del pipeline con `uv init` (disposición `src/`) y primera rebanada vertical
-—esperanza de vida, todos los países, del Banco Mundial hasta una página desplegada—.
+Antes de escribir el descargador, pasar la lista de comprobaciones de fuentes de `CLAUDE.md` para
+el Banco Mundial y dejarlo anotado en `decisiones.md`.
 
-**Decisión aplazada y bloqueante antes de publicar:** licencias. Ver `ORGANIZACION.md` §9.
+Repositorio: **https://github.com/OscarFdz24/atlas** (público, rama `main`).
 
 ---
 
@@ -35,12 +35,16 @@ todavía **no existe una sola línea de código**.
 - **Metodología y stack investigados y cerrados** en `atlas/METODOLOGIA.md`: método de rebanadas
   verticales, tres capas de datos con caché de respuestas, y stack Python (uv, Polars, DuckDB,
   Pandera) + Astro. Recharts descartado por no renderizar en servidor.
+- **Organización interna cerrada** en `atlas/ORGANIZACION.md`: monorepo, trunk-based sobre `main`,
+  Ruff/mypy/Biome, tres flujos de CI, issues de GitHub con límite de una tarea en curso.
+- **Repositorio publicado:** https://github.com/OscarFdz24/atlas (público, `main`), con el primer
+  commit de documentación y licencias MIT (código) + CC BY 4.0 (datos).
 
 ## Lo que NO existe todavía
 
-- El repositorio git no está inicializado.
 - No hay código: ni pipeline de Python, ni aplicación web.
-- El catálogo de indicadores (`atlas/data/indicators.yaml`) está previsto pero sin escribir.
+- El catálogo de indicadores (`data/indicators.yaml`) está previsto pero sin escribir.
+- No hay flujos de GitHub Actions, ni despliegue en Cloudflare Pages, ni tablero de issues.
 
 ## Siguiente paso
 
