@@ -1,0 +1,34 @@
+# --- Datos ---
+# raw/ y processed/ SÍ se versionan a propósito (ver ORGANIZACION.md §1):
+# raw/ es la caché reproducible, processed/ es el producto que consume la web.
+# interim/ es regenerable y desechable.
+data/interim/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# --- Node / Astro ---
+node_modules/
+dist/
+.astro/
+.wrangler/
+
+# --- Entorno y secretos ---
+.env
+.env.*
+!.env.example
+
+# --- Sistema y editores ---
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/

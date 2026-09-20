@@ -1,0 +1,41 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Copyright (c) 2026 OscarFdz24
+
+The data files published in this repository (the contents of `data/`) are
+licensed under the Creative Commons Attribution 4.0 International License.
+
+You are free to share and adapt this data for any purpose, including
+commercially, provided you give appropriate credit, link to the license, and
+indicate if changes were made.
+
+Full legal text: https://creativecommons.org/licenses/by/4.0/legalcode
+Summary:        https://creativecommons.org/licenses/by/4.0/
+
+Suggested attribution:
+
+    Data compiled by the Atlas project (https://github.com/OscarFdz24/atlas),
+    licensed under CC BY 4.0. Derived from the original sources listed below.
+
+---
+
+IMPORTANT — UPSTREAM SOURCES
+
+This license applies to the COMPILATION and the transformations performed by
+this project. It does NOT override the licenses of the original data sources,
+which remain with their respective publishers and must be credited in their
+own right:
+
+  - World Bank Open Data          — CC BY 4.0
+  - Our World in Data             — CC BY 4.0
+  - Natural Earth (geometries)    — Public domain
+  - REST Countries                — Free use
+
+Every source added to this project must have its license verified and
+documented before any code that downloads it is written. See CLAUDE.md for the
+required checks.
+
+---
+
+This license covers the DATA only.
+The SOURCE CODE of this repository is licensed under the MIT License — see LICENSE.
