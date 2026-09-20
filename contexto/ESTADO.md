@@ -2,14 +2,28 @@
 
 ## ► SIGUIENTE PASO
 
-**Montar el esqueleto del pipeline:** `uv init` con disposición `src/` en `pipeline/`, un `Makefile`
-y el flujo `ci.yml` mínimo. Después, la primera rebanada vertical: esperanza de vida, todos los
-países, desde la API del Banco Mundial hasta una página desplegada en Cloudflare Pages.
-
-Antes de escribir el descargador, pasar la lista de comprobaciones de fuentes de `CLAUDE.md` para
-el Banco Mundial y dejarlo anotado en `decisiones.md`.
+**Fase 2: integración continua.** Escribir `.github/workflows/ci.yml` (lint, tipos y pruebas, con
+filtros por ruta) y `data-refresh.yml` (cron mensual que ejecuta el pipeline y hace commit de
+`data/` si hay cambios). Recordar la trampa de los 60 días.
 
 Repositorio: **https://github.com/OscarFdz24/atlas** (público, rama `main`).
+
+## Plan por fases
+
+El trabajo se hace por fases cortas para controlar el consumo de tokens. Cada fase termina en un
+estado que funciona y se puede revisar.
+
+| Fase | Contenido | Estado |
+|---|---|---|
+| 1 | Pipeline de datos: catálogo, descarga con caché, validación y JSON | **Hecha** |
+| 2 | CI: `ci.yml` y `data-refresh.yml` | Siguiente |
+| 3 | Esqueleto de Astro y mapa de coropletas en SVG | Pendiente |
+| 4 | Rutas por país e indicador, metadatos y SEO | Pendiente |
+| 5 | Despliegue en Cloudflare Pages | Pendiente |
+| 6 | Ampliar el catálogo a 15–20 indicadores | Pendiente |
+
+Con las fases 1 a 5 terminadas, la rebanada vertical está completa y el sitio está publicado.
+La fase 6 ya es repetición, no descubrimiento. La IA del `ROADMAP.md` viene después.
 
 ---
 
@@ -40,11 +54,17 @@ todavía **no existe una sola línea de código**.
 - **Repositorio publicado:** https://github.com/OscarFdz24/atlas (público, `main`), con el primer
   commit de documentación y licencias MIT (código) + CC BY 4.0 (datos).
 
+- **Fase 1 terminada: el pipeline funciona de extremo a extremo.** `just data` produce
+  `data/processed/indicators/life-expectancy.json` (217 países, 1960–2024, 251 KiB) desde la API
+  del Banco Mundial, con caché en `data/raw/`, validación con Pandera y 9 pruebas en verde.
+  Herramientas instaladas: uv 0.12.17 y just 1.58.0 (se eligió `just` en lugar de `make`, que en
+  Windows da problemas).
+
 ## Lo que NO existe todavía
 
-- No hay código: ni pipeline de Python, ni aplicación web.
-- El catálogo de indicadores (`data/indicators.yaml`) está previsto pero sin escribir.
+- No hay web: ni Astro, ni mapa, ni páginas.
 - No hay flujos de GitHub Actions, ni despliegue en Cloudflare Pages, ni tablero de issues.
+- El catálogo tiene **un solo indicador**. Ampliarlo es la fase 6.
 
 ## Siguiente paso
 

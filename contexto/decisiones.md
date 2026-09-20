@@ -6,6 +6,50 @@ cambien las circunstancias.
 
 ---
 
+## 2026-09-20 — Fuente aprobada: Banco Mundial (con dos cautelas)
+
+**Decisión:** el Banco Mundial queda **aprobado** como fuente tras pasar la lista de
+comprobaciones de `CLAUDE.md`.
+
+**Licencia:** CC BY 4.0 **más un anexo** —los términos añaden una cláusula de resolución de
+disputas por arbitraje—, así que no es CC BY 4.0 a secas. Documento válido:
+`data.worldbank.org/summary-terms-of-use`.
+
+**Atribución obligatoria, en este formato exacto:** `The World Bank: Dataset name: Data source`.
+Y la obligación se propaga: al redistribuir hay que imponer el mismo requisito de atribución aguas
+abajo, cosa que ya recoge `LICENSE-DATA`.
+
+**Prohibido:** dar a entender que el Banco Mundial respalda el proyecto, y usar su nombre o logotipo
+de forma que lo sugiera. Hay que indicar además que los datos han sido modificados.
+
+**API:** el uso automatizado está permitido de forma explícita, sin clave y sin registro. No hay
+límite de peticiones publicado y las respuestas se cachean 24 h, así que un refresco mensual queda
+muy holgado. `robots.txt` no prohíbe nada.
+
+### Cautela 1 — indicadores de terceros
+
+Los términos advierten de que **algunos indicadores proceden de terceros y pueden no ser
+redistribuibles**. Afecta directamente a la esperanza de vida, cuya ficha cita a Naciones Unidas,
+oficinas estadísticas nacionales y Eurostat. La API **no expone la licencia por indicador de forma
+legible por máquina**, así que no se puede comprobar automáticamente.
+
+**Consecuencia de diseño:** el catálogo de indicadores es una **lista blanca explícita**. Nada se
+descarga si no está en `data/indicators.yaml` con su licencia verificada a mano y la fecha de la
+comprobación. No se descargará "todo el catálogo del Banco Mundial".
+
+### Cautela 2 — URL legal obsoleta
+
+`worldbank.org/en/about/legal/terms-of-use-for-datasets` **ya no sirve los términos de datos**:
+ahora devuelve las condiciones generales del sitio, que son restrictivas y prohíben obras
+derivadas. No citar esa URL.
+
+**Otros apuntes:** la v2 de la API es la vigente, sin v3 anunciada ni política de obsolescencia
+publicada — se fija `v2` y se vigila. Y el Banco Mundial **revisa datos históricos en silencio**,
+sin registro de cambios, lo que confirma que guardar cada instantánea en `data/raw/` era la
+decisión correcta.
+
+---
+
 ## 2026-09-20 — El repositorio es `atlas/`, no el workspace
 
 **Decisión:** git se inicializa **dentro de la carpeta del proyecto** (`atlas/`), con rama `main`.

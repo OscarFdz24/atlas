@@ -1,0 +1,38 @@
+# Catálogo de indicadores de Atlas.
+#
+# Esto es una LISTA BLANCA: el pipeline solo descarga lo que aparece aquí.
+# No existe un modo "descargar todo el catálogo del Banco Mundial", y es
+# deliberado: sus términos advierten de que algunos indicadores proceden de
+# terceros y pueden no ser redistribuibles, y la API no expone esa condición
+# de forma legible por máquina. Por eso cada indicador se verifica a mano.
+#
+# Antes de añadir uno, pasa la lista de comprobaciones de CLAUDE.md y rellena
+# `licence` y `licence_checked`. Sin esos dos campos, el pipeline lo rechaza.
+
+sources:
+  worldbank:
+    name: World Bank Open Data
+    url: https://data.worldbank.org
+    terms: https://data.worldbank.org/summary-terms-of-use
+    licence: CC BY 4.0 (con anexo de resolución de disputas)
+    attribution_format: "The World Bank: {dataset}: {source}"
+
+indicators:
+  - id: life-expectancy
+    source: worldbank
+    code: SP.DYN.LE00.IN
+    name_es: Esperanza de vida al nacer
+    name_en: Life expectancy at birth
+    description_es: >-
+      Años que viviría un recién nacido si las pautas de mortalidad vigentes en
+      el momento de su nacimiento se mantuvieran durante toda su vida.
+    unit_es: años
+    unit_en: years
+    decimals: 1
+    higher_is_better: true
+    dataset: World Development Indicators
+    upstream_sources: >-
+      UN Population Division (World Population Prospects), national statistical
+      offices, Eurostat
+    licence: CC BY 4.0
+    licence_checked: 2026-09-20
