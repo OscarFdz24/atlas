@@ -1,0 +1,52 @@
+name: Data refresh
+
+on:
+  schedule:
+    # 03:00 UTC on the 1st of every month. The World Bank caches responses for
+    # 24 h and revises annual series a few times a year, so monthly is plenty.
+    - cron: "0 3 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10
+        with:
+          version: "0.12.17"
+          enable-cache: true
+          cache-dependency-glob: "pipeline/uv.lock"
+
+      - name: Rebuild every indicator from the sources
+        working-directory: pipeline
+        run: uv run atlas build-all --refresh
+
+      - name: Commit the data if it changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if [ -n "$(git status --porcelain data/)" ]; then
+            git add data/
+            git commit -m "chore(data): refresh indicators from upstream sources"
+            git push
+            exit 0
+          fi
+
+          echo "No upstream changes."
+
+          # GitHub disables scheduled workflows after 60 days without commits,
+          # and only commits reset the timer. A run that finds no changes would
+          # otherwise let this job die silently, so keep the repository alive.
+          days_idle=$(( ( $(date +%s) - $(git log -1 --format=%ct) ) / 86400 ))
+          echo "Days since last commit: ${days_idle}"
+          if [ "${days_idle}" -ge 50 ]; then
+            git commit --allow-empty -m "chore: keep scheduled workflows enabled"
+            git push
+          fi

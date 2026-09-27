@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pipeline/**"
+      - "data/indicators.yaml"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    paths:
+      - "pipeline/**"
+      - "data/indicators.yaml"
+      - ".github/workflows/ci.yml"
+  workflow_dispatch:
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: pipeline
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10
+        with:
+          version: "0.12.17"
+          enable-cache: true
+          cache-dependency-glob: "pipeline/uv.lock"
+
+      - run: uv sync --locked
+
+      - name: Format
+        run: uv run ruff format --check .
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Types
+        run: uv run mypy
+
+      - name: Tests
+        run: uv run pytest

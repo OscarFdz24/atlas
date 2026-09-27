@@ -2,9 +2,11 @@
 
 ## ► SIGUIENTE PASO
 
-**Fase 2: integración continua.** Escribir `.github/workflows/ci.yml` (lint, tipos y pruebas, con
-filtros por ruta) y `data-refresh.yml` (cron mensual que ejecuta el pipeline y hace commit de
-`data/` si hay cambios). Recordar la trampa de los 60 días.
+**Fase 3: la web.** Crear `web/` con Astro, cargar el TopoJSON de Natural Earth y pintar el mapa
+mundial de coropletas con `d3-geo`, **como SVG en tiempo de build** (no en el navegador: tiene que
+estar dentro del HTML). Consume `data/processed/indicators/life-expectancy.json`, que ya existe.
+
+Requiere instalar dependencias de Node, así que hay que **pedir permiso** antes.
 
 Repositorio: **https://github.com/OscarFdz24/atlas** (público, rama `main`).
 
@@ -16,8 +18,8 @@ estado que funciona y se puede revisar.
 | Fase | Contenido | Estado |
 |---|---|---|
 | 1 | Pipeline de datos: catálogo, descarga con caché, validación y JSON | **Hecha** |
-| 2 | CI: `ci.yml` y `data-refresh.yml` | Siguiente |
-| 3 | Esqueleto de Astro y mapa de coropletas en SVG | Pendiente |
+| 2 | CI: `ci.yml` y `data-refresh.yml` | **Hecha** |
+| 3 | Esqueleto de Astro y mapa de coropletas en SVG | Siguiente |
 | 4 | Rutas por país e indicador, metadatos y SEO | Pendiente |
 | 5 | Despliegue en Cloudflare Pages | Pendiente |
 | 6 | Ampliar el catálogo a 15–20 indicadores | Pendiente |
@@ -60,20 +62,16 @@ todavía **no existe una sola línea de código**.
   Herramientas instaladas: uv 0.12.17 y just 1.58.0 (se eligió `just` en lugar de `make`, que en
   Windows da problemas).
 
+- **Fase 2 terminada: integración continua.** `ci.yml` pasa formato, linter, tipos y pruebas en
+  cada push que toque el pipeline (con filtros por ruta). `data-refresh.yml` reejecuta el pipeline
+  el día 1 de cada mes y hace commit de `data/` solo si algo cambió, con un commit de latido si el
+  repositorio lleva 50 días quieto.
+
 ## Lo que NO existe todavía
 
 - No hay web: ni Astro, ni mapa, ni páginas.
-- No hay flujos de GitHub Actions, ni despliegue en Cloudflare Pages, ni tablero de issues.
+- No hay despliegue en Cloudflare Pages ni tablero de issues.
 - El catálogo tiene **un solo indicador**. Ampliarlo es la fase 6.
-
-## Siguiente paso
-
-La metodología acordada es de **rebanadas verticales**, así que el siguiente paso es la primera
-rebanada completa: **un indicador (esperanza de vida), todos los países, desde la descarga del
-Banco Mundial hasta una página desplegada en internet.**
-
-Antes hace falta: inicializar git con su `.gitignore`, y montar el esqueleto del proyecto
-(`pyproject.toml` con uv, estructura `src/atlas/`, `Makefile`).
 
 ## Contexto abierto
 

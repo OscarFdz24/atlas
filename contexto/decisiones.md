@@ -6,6 +6,26 @@ cambien las circunstancias.
 
 ---
 
+## 2026-09-27 — El refresco de datos se mantiene vivo con un commit de latido
+
+**Decisión:** `data-refresh.yml` hace commit de `data/` cuando los datos cambian y, cuando no
+cambian, comprueba cuántos días lleva el repositorio sin commits: a partir de 50 hace un commit
+vacío.
+
+**Por qué:** GitHub desactiva los flujos programados tras **60 días sin commits**, y solo los
+commits reinician el contador. Un refresco que no encuentre cambios durante dos meses dejaría el
+cron desactivado **en silencio**, y el fallo se descubriría meses después con el sitio
+desactualizado. El umbral de 50 deja margen antes del límite.
+
+**Descartado:** hacer siempre un commit vacío en cada ejecución, que ensuciaría el historial sin
+aportar nada.
+
+**Otras decisiones del flujo:** cron mensual (el Banco Mundial cachea 24 h y revisa las series
+anuales unas pocas veces al año, así que más frecuencia no aportaría), y filtros por ruta en
+`ci.yml` para que tocar la documentación no lance la batería de pruebas.
+
+---
+
 ## 2026-09-20 — Fuente aprobada: Banco Mundial (con dos cautelas)
 
 **Decisión:** el Banco Mundial queda **aprobado** como fuente tras pasar la lista de
