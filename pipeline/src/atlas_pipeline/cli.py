@@ -3,7 +3,7 @@ from rich.console import Console
 
 from atlas_pipeline.catalog import get_indicator, load_catalog
 from atlas_pipeline.sources import worldbank
-from atlas_pipeline.transform import build_indicator, write_indicator
+from atlas_pipeline.transform import build_indicator, write_indicator, write_web_bundle
 
 app = typer.Typer(help="Atlas data pipeline.", no_args_is_help=True)
 console = Console()
@@ -50,6 +50,14 @@ def build(
         f"[green]{indicator.id}[/green]: {len(payload['countries'])} countries, "
         f"{payload['yearRange'][0]}-{payload['yearRange'][1]}, {size / 1024:.0f} KiB"
     )
+
+
+@app.command("web")
+def web() -> None:
+    """Write the catalogue and per-indicator series the website consumes."""
+    sources, indicators = load_catalog()
+    n_ind, n_countries = write_web_bundle(indicators, sources)
+    console.print(f"[green]ok[/green] {n_ind} indicadores, {n_countries} países en web/public/data")
 
 
 @app.command("build-all")

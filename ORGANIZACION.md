@@ -47,16 +47,24 @@ atlas/
 paquetes que aquí no existen. Dos cadenas de herramientas independientes compartiendo una raíz de
 git: ese es todo el diseño.
 
-## Los datos generados se versionan
+## Qué datos se versionan y cuáles no
 
-El pipeline escribe en `data/processed/` y la web lee de ahí, **con los ficheros dentro del
-repositorio**. Ventajas: el sitio se reconstruye entero desde un clon, Cloudflare Pages compila
-directamente desde git sin fontanería de artefactos, y el historial de git se convierte en un
-registro fechado de cómo cambian los datos oficiales.
+> **Corregido el 2026-09-27.** La primera versión de este documento decía que también se versionaba
+> `data/raw/`. Al ampliar el catálogo a 20 indicadores resultó pesar 103 MB, y el cron los reescribe
+> enteros cada mes: versionarlos añadiría ~100 MB al historial en cada refresco.
 
-Condiciones para que siga siendo buena idea: un fichero por indicador (no un JSON gigante), sin
-formato legible con sangrías, y vigilar el tamaño total. **Por debajo de 100–200 MB no hay
-problema**; si se supera, los datos pasan a un *release asset* o a una rama huérfana.
+**Sí se versiona:** `data/processed/` (el producto) y `web/public/data/` (lo que consume el sitio).
+Así el sitio se reconstruye entero desde un clon, Cloudflare Pages compila desde git sin fontanería
+de artefactos, y el historial queda como registro fechado de cómo cambian los datos oficiales —que
+era el valor real del patrón de *git scraping*.
+
+**No se versiona:** `data/raw/`, la caché de respuestas de la API, que se queda en local y cumple
+igual su función de reproducibilidad; `data/interim/`, regenerable; y `prototipo/`, un único HTML
+de 2,7 MB con los datos incrustados.
+
+Condiciones para que lo versionado siga siendo manejable: un fichero por indicador (no un JSON
+gigante), sin sangrías, y vigilar el tamaño total. Si algún día se dispara, los datos pasan a un
+*release asset* o a una rama huérfana.
 
 ## Estructura de Python
 

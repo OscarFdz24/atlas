@@ -15,12 +15,20 @@ catalog:
 test:
     cd pipeline && uv run pytest
 
+dev:
+    cd web && npm run dev
+
+# Build the static site into web/dist
+site:
+    cd web && npm run build
+
 # Everything CI runs
 check:
     cd pipeline && uv run ruff format --check .
     cd pipeline && uv run ruff check .
     cd pipeline && uv run mypy
     cd pipeline && uv run pytest
+    cd web && npx astro check
 
 fix:
     cd pipeline && uv run ruff format .

@@ -1,0 +1,106 @@
+---
+import "../styles/explorer.css";
+
+const title = "Atlas — explorador de datos de países";
+const description =
+  "Gira el globo, compara países y construye tus propias gráficas con 20 indicadores " +
+  "del Banco Mundial, de 1960 a hoy. Datos abiertos, sin registro.";
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+    />
+  </head>
+  <body>
+    <div class="stage" id="stage">
+      <canvas id="globe"></canvas>
+      <div id="tip" hidden></div>
+
+      <div class="corner">
+        <div class="logo-row">
+          <span id="logoSlot"></span>
+          <div class="word"><b>Atlas</b><em>Explorador</em></div>
+        </div>
+        <div class="ctl-row">
+          <div class="search">
+            <input id="search" type="text" placeholder="Buscar país…" autocomplete="off" aria-label="Buscar país">
+            <div class="results" id="results" hidden></div>
+          </div>
+          <button class="icon-btn" id="themeBtn" type="button" title="Cambiar tema">◐</button>
+          <div class="logo-pick" id="logoPick" title="Variante de logo">
+            <button class="icon-btn" type="button" data-logo="0">1</button>
+            <button class="icon-btn" type="button" data-logo="1">2</button>
+            <button class="icon-btn" type="button" data-logo="2">3</button>
+          </div>
+        </div>
+        <div class="pins" id="pins"></div>
+      </div>
+
+      <div class="hud glass" id="hud">
+        <div class="hud-top">
+          <h3 id="hudTitle">—</h3>
+          <button class="info" id="infoBtn" type="button" title="Qué mide este indicador">i</button>
+          <span class="yr-inline" id="yrInline" hidden></span>
+          <button class="hud-fold" id="hudFold" type="button" title="Plegar" aria-expanded="true">▾</button>
+        </div>
+        <div class="hud-body">
+          <p id="hudMeta">—</p>
+          <div class="ramp" id="ramp"></div>
+          <div class="ramp-lab"><span id="rampMin">—</span><span id="rampMax">—</span></div>
+          <div class="timeline">
+            <button class="icon-btn" id="playBtn" type="button" title="Reproducir años">▶</button>
+            <input id="yearRange" type="range" aria-label="Año">
+            <span class="yr" id="yearOut">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tools">
+        <button class="icon-btn" id="spinBtn" type="button" title="Girar">❚❚</button>
+        <button class="icon-btn" id="zoomIn" type="button" title="Acercar">+</button>
+        <button class="icon-btn" id="zoomOut" type="button" title="Alejar">−</button>
+      </div>
+
+      <button class="handle" id="handle" type="button" aria-label="Abrir explorador">‹</button>
+
+      <aside class="drawer" id="drawer" aria-label="Gráficas">
+        <div class="head">
+          <div class="row">
+            <div><h2>Gráficas</h2><div class="sub">Con la configuración del explorador</div></div>
+            <button class="x" id="drawerX" type="button" aria-label="Cerrar gráficas">×</button>
+          </div>
+          <div class="tabs" style="visibility:hidden;height:0;margin:0"></div>
+        </div>
+        <div class="body" id="drawerBody"></div>
+      </aside>
+
+      <aside class="panel" id="panel" aria-label="Explorador">
+        <div class="head">
+          <div class="row">
+            <div><h2 id="pTitle">Explorador</h2><div class="sub" id="pSub">—</div></div>
+          </div>
+          <div class="tabs" role="tablist">
+            <button role="tab" data-tab="config" aria-selected="true">Configuración</button>
+            <button role="tab" data-tab="pais" aria-selected="false">País</button>
+            <button role="tab" data-tab="datos" aria-selected="false">Descargas</button>
+          </div>
+        </div>
+        <div class="action-bar" id="actionBar"></div>
+        <div class="body" id="panelBody"></div>
+        <div class="foot" id="foot">—</div>
+      </aside>
+    </div>
+    <script>
+      import "../lib/explorer.js";
+    </script>
+  </body>
+</html>

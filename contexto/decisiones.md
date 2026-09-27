@@ -6,6 +6,199 @@ cambien las circunstancias.
 
 ---
 
+## 2026-09-27 — `data/raw/` deja de versionarse (corrige a ORGANIZACION.md §1)
+
+**Decisión:** la caché de respuestas de la API **no entra en git**. Se versiona solo
+`data/processed/` y el paquete de `web/public/data/`.
+
+**Por qué:** al ampliar el catálogo a 20 indicadores, `data/raw/` pasó a pesar **103 MB**. Ningún
+fichero supera el límite de 50 MB de GitHub, pero **el cron mensual los reescribe enteros**, así
+que versionarlos añadiría del orden de 100 MB al historial en cada refresco. En un año el
+repositorio sería inmanejable.
+
+**Qué se pierde y qué no:** se pierde el archivo histórico de las respuestas crudas. **No se
+pierde** la reproducibilidad local —la caché sigue existiendo en disco y `--refresh` la
+reconstruye— ni el registro de cambios: el historial de `data/processed/` sigue mostrando cómo
+varían los datos oficiales, que era el valor real del patrón de *git scraping*.
+
+**También excluido:** `prototipo/`, la maqueta de diseño, por ser un único HTML de 2,7 MB con
+todos los datos incrustados que además se regenera a voluntad.
+
+---
+
+## 2026-09-27 — Astro se queda, React se va
+
+**Decisión:** el explorador se escribe en **JavaScript puro con d3**, dentro de Astro. Se elimina
+React del stack.
+
+**Por qué:** React entró cuando el plan era "islas de React para el mapa". El prototipo acabó
+escrito en JavaScript puro y funciona; meterlo en React significaría reescribirlo entero sin ganar
+nada, porque no hay formularios complejos ni estado compartido entre muchos componentes.
+
+**Astro se revisó de nuevo** tras el cambio de producto y se mantiene: lo que mejor hace —generar
+miles de páginas prerenderizadas con sus metadatos— es justo la parte tediosa del proyecto, y el
+explorador como isla no le cuesta nada.
+
+**Alternativa evaluada y descartada:** quitar Astro y generar las páginas estáticas desde el
+pipeline con Jinja2. Encajaba con la preferencia por Python, pero obligaría a escribir a mano el
+sitemap, las canónicas, el `hreflang` y el enrutado, y dejaría dos compilaciones que coordinar.
+
+**Se anota que es barato revertirlo:** la lógica vive en módulos sin dependencia de Astro.
+
+---
+
+## 2026-09-27 — Los datos de la web van troceados
+
+**Decisión:** el pipeline gana el comando `atlas web`, que escribe en `web/public/data/` un
+`catalog.json` pequeño (23 KiB) y **un fichero por indicador** en `series/`.
+
+**Por qué:** el prototipo llevaba los 20 indicadores incrustados, 2,7 MB que el navegador tenía que
+tragarse antes de pintar el globo. Ahora arranca con ~300 KiB y pide cada serie al seleccionarla.
+
+**Excepción:** la ficha de país muestra los veinte indicadores a la vez, así que al abrir esa
+pestaña se cargan todas las series en segundo plano.
+
+---
+
+## 2026-09-27 — Público objetivo: inversores, emprendedores y geopolítica
+
+**Decisión del usuario:** Atlas es una herramienta para **decidir dónde invertir o dónde vivir**, y
+para seguir la situación de un país. Tres perfiles: inversores, jóvenes emprendedores y gente
+interesada en datos geopolíticos.
+
+**Consecuencia inmediata:** los 20 indicadores actuales **no responden a esas preguntas**.
+Esperanza de vida y superficie forestal no le dicen a un inversor dónde invertir.
+
+**Lo que hay que añadir, y sí es gratis:**
+- **Worldwide Governance Indicators** del Banco Mundial (corrupción, estado de derecho,
+  estabilidad política, calidad regulatoria). Otra fuente dentro de la misma API.
+- **Tasa de homicidios** (UNODC), ya dentro de los WDI — cubre "seguridad" para quien se muda.
+- **Ratio de nivel de precios** (derivado de la PPA): indicador de carestía **legal, gratuito y
+  global**. No es Numbeo ni baja a ciudad, pero recupera buena parte de lo que dimos por perdido
+  el 2026-09-20.
+- Inversión extranjera directa, comercio, dependencia energética.
+
+**Lo que seguirá sin poderse:** coste de vida por ciudad, visados y requisitos de residencia,
+impuestos personales. No existe gratis y en formato reutilizable.
+
+**Funciones que pidió y quedan pendientes:** cargar datos propios (se procesarían en el navegador,
+sin subir nada), y exportar. La exportación ya está en la maqueta.
+
+---
+
+## 2026-09-27 — Interfaz: globo a la izquierda, menús a la derecha
+
+**Decisión:** se elimina el menú lateral izquierdo. El panel **Explorador** va a la derecha y
+**plegado por defecto**; dentro tiene un botón que despliega un segundo cajón de **Gráficas** hacia
+el centro, y **el globo se desplaza a la izquierda** para no quedar tapado.
+
+**Por qué:** el menú izquierdo duplicaba lo que ya había a la derecha y se comía el globo. El
+usuario eligió esta disposición entre tres maquetas.
+
+**Estética:** acento **cian eléctrico**, tema claro y oscuro rehechos, halo alrededor del globo y
+**paletas del globo elegibles** por el usuario (cian, azul, ámbar, violeta, verde).
+
+**Tensión resuelta a propósito:** el usuario pidió "colores más vivos". El acento vivo va en
+controles, bordes y cifras, pero **la rampa del globo sigue siendo de un solo tono**, porque ahí el
+color es información y saturarlo haría ilegible el mapa.
+
+**Los meses no existen.** Todos los indicadores son anuales; un filtro mensual tendría que
+inventarse los datos. Se ofrece rango de años y línea temporal.
+
+---
+
+## 2026-09-27 — Cambio de producto: de documento a herramienta
+
+**Decisión del usuario, tras ver la v1 renderizada:** Atlas no es una página que se lee, es una
+**aplicación para explorar**. Tres elecciones concretas:
+
+1. **Globo 3D vectorial que rota y se acerca**, no un mapa plano estático.
+2. **Constructor de paneles completo**: elegir indicadores, países y tipo de gráfica desde la
+   interfaz y montar tu propio panel.
+3. **Ampliar el catálogo a 15–20 indicadores antes** de construir el panel.
+
+**Por qué:** el usuario lo resumió como "con esto solo puedo leer". Y tenía razón: la v1 se diseñó
+alrededor del SEO, que empuja a HTML estático sin JavaScript, y el resultado era un documento.
+
+### Cómo convive con el SEO
+
+No hay que elegir, y esta es la razón por la que Astro estaba bien elegido desde el principio:
+
+- **`/`** → el explorador interactivo, como **isla** de React. Lleva JavaScript.
+- **`/es/pais/espana`** y demás rutas → **siguen siendo HTML estático puro** para los buscadores,
+  y enlazan al explorador.
+
+El buscador indexa las páginas de datos; la persona que llega usa la herramienta.
+
+### Lo que se descarta y por qué
+
+**Imágenes de satélite tipo Google Earth.** Requieren *tiles* de Mapbox o Google, con clave de API
+y factura. Rompe la restricción de coste cero del workspace. Lo que se hace es un **globo
+vectorial** con la proyección ortográfica de `d3-geo`: rota, se acerca y no cuesta nada, pero no
+hay fotografía del terreno.
+
+### Advertencia registrada
+
+Se advirtió al usuario de que el constructor de paneles **es un proyecto en sí mismo, de semanas**,
+y que emprenderlo con Atlas todavía sin publicar es el patrón exacto que `ORGANIZACION.md` §7
+documenta como causa de muerte de los proyectos personales: ampliación de alcance, no dificultad
+técnica.
+
+**Mitigación acordada: cambiar el orden, no el destino.** Desplegar primero lo que ya funciona, y
+construir el resto sobre algo vivo en internet. El plan de fases se reescribe en `ESTADO.md`.
+
+---
+
+## 2026-09-27 — Geometrías: Natural Earth 1:110m vía `world-atlas`
+
+**Fuente aprobada.** Natural Earth declara **dominio público** de forma explícita en sus términos:
+"no se necesita permiso" y "citar a los autores es innecesario". El paquete `world-atlas` 2.0.2,
+que distribuye el TopoJSON ya construido, es ISC. Las seis comprobaciones de `CLAUDE.md` pasan.
+
+**Fichero:** `data/geo/countries-110m.json`, 106 KB, 177 países. Se versiona en el repositorio.
+
+**Resolución 1:110m** en lugar de 1:50m: pesa una fracción y para un mapa mundial completo la
+diferencia no se aprecia. El coste está anotado abajo.
+
+### El problema de las claves y cómo se resuelve
+
+El TopoJSON identifica países por **código ISO numérico** (`"242"` = Fiyi) y nuestros datos usan
+**ISO alfa-3** (`FJI`). Unir por nombre sería frágil ("Russia" contra "Russian Federation").
+
+**Solución:** `i18n-iso-countries` (MIT, 7.14.0) como dependencia de compilación de `web/`. Trae
+las tablas ISO 3166-1 completas, no necesita red y su licencia es inequívoca.
+
+**Descartado:** REST Countries. Aparecía como fuente aprobada en `CLAUDE.md`, pero al ir a
+verificarla **no se encontró una licencia explícita de los datos**, y la regla dice que sin
+licencia clara la fuente no se usa. Además habría metido una llamada de red en la compilación.
+
+### Cobertura real del cruce, medida
+
+| | |
+|---|---|
+| Geometrías que cruzan con datos | **169** de 177 |
+| Con datos pero **sin geometría** | 48 |
+| Sin código ISO numérico | 3 |
+| Con geometría pero sin datos | 5 |
+
+**Los 48 sin geometría** son microestados e islas —Singapur, Malta, Mónaco, Maldivas, Barbados,
+Hong Kong…— que a escala 1:110m no se dibujan. **Consecuencia asumida: no aparecen en el mapa.**
+Sus fichas de país sí existirán (fase 4), y conviene que el mapa lo advierta en vez de fingir que
+esos países no tienen datos. Si algún día molesta, la salida es bajar a 1:50m, no inventar
+geometrías.
+
+**Los 3 sin código** son Kosovo, Somalilandia y el norte de Chipre: territorios disputados sin
+código ISO numérico asignado. **No se les asigna uno a mano**, porque sería tomar una posición
+política y además inventar un dato.
+
+**Los 5 sin datos** incluyen Taiwán, el Sáhara Occidental y las Malvinas: el Banco Mundial no
+publica series para ellos.
+
+Los ocho últimos se pintan como **"sin datos"**, nunca en blanco ni interpolados, según la regla
+de honestidad con los datos de `CLAUDE.md`.
+
+---
+
 ## 2026-09-27 — El refresco de datos se mantiene vivo con un commit de latido
 
 **Decisión:** `data-refresh.yml` hace commit de `data/` cuando los datos cambian y, cuando no

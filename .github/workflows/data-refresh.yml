@@ -26,7 +26,9 @@ jobs:
 
       - name: Rebuild every indicator from the sources
         working-directory: pipeline
-        run: uv run atlas build-all --refresh
+        run: |
+          uv run atlas build-all --refresh
+          uv run atlas web
 
       - name: Commit the data if it changed
         run: |

@@ -1,8 +1,17 @@
 # --- Datos ---
-# raw/ y processed/ SÍ se versionan a propósito (ver ORGANIZACION.md §1):
-# raw/ es la caché reproducible, processed/ es el producto que consume la web.
-# interim/ es regenerable y desechable.
+# processed/ SÍ se versiona: es el producto, y su historial muestra cómo cambian
+# los datos oficiales con el tiempo.
+#
+# raw/ NO se versiona, corrigiendo lo que decía ORGANIZACION.md §1. Son 103 MB
+# de respuestas de la API que el cron reescribe cada mes: versionarlas añadiría
+# ~100 MB al historial en cada refresco. Se queda como caché local, que es su
+# función real; `atlas build-all --refresh` la reconstruye.
+data/raw/
 data/interim/
+
+# Maqueta de diseño: un único HTML con todos los datos incrustados (2,7 MB).
+# Se regenera desde scratchpad y la aplicación de web/ ya la sustituye.
+prototipo/
 
 # --- Python ---
 __pycache__/

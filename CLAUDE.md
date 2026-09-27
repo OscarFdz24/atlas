@@ -145,16 +145,30 @@ React: son mejora, no requisito para leer la página.
 Nada de contenido generado en masa para captar tráfico, ni texto escrito para el buscador en lugar
 de para la persona. Las páginas se posicionan porque el dato que contienen es el que se buscaba.
 
-## Alcance de la v1
+## Qué es Atlas: una herramienta, no un documento
 
-Cerrado y deliberadamente pequeño. Objetivo: estar desplegado y funcionando.
+*Revisado el 2026-09-27. La v1 anterior era una página que se leía; ver `contexto/decisiones.md`.*
 
-1. Mapa mundial de coropletas con un selector de indicador (~15–20 indicadores del Banco Mundial).
-2. Clic en un país → panel lateral con su ficha y la serie histórica de ese indicador.
-3. Vista "comparar dos países" en varios indicadores a la vez.
-4. Rutas pregeneradas por país, por indicador y por pareja de países, con sus metadatos,
-   JSON-LD y `sitemap.xml`. Es parte de la v1, no una mejora posterior: rehacer el enrutado
-   después cuesta mucho más que hacerlo bien desde el principio.
+Atlas es una **aplicación para explorar datos de países**. Lo que la define:
 
-**Fuera de la v1:** cuentas de usuario, mapas por ciudad, coste de vida, predicciones, IA,
-descarga de datos, traducciones más allá de español e inglés.
+1. **Un globo 3D vectorial** que se rota y se acerca, dibujado con la proyección ortográfica de
+   `d3-geo`. **Sin *tiles* ni imágenes de satélite:** eso exige claves de API y factura, y rompe la
+   restricción de coste cero. Se mueve como un globo terráqueo, pero es vectorial.
+2. **Un panel lateral desplegable.** Al seleccionar un país —con un clic en el globo o desde un
+   buscador— muestra su ficha, sus series históricas y comparaciones.
+3. **Un constructor de paneles**: elegir indicadores, países y tipo de gráfica desde la interfaz
+   para montar vistas propias sin escribir código.
+
+### Cómo convive con el SEO
+
+Las dos cosas coexisten, y para eso se eligió Astro:
+
+- **`/`** → el explorador interactivo, como **isla** de React. Lleva JavaScript.
+- **`/es/pais/espana`, `/es/indicador/...`** → **HTML estático puro**, generado en tiempo de build,
+  que es lo que indexa Google y lo que enlaza al explorador.
+
+Una regla no cambia: **el contenido indexable no depende de JavaScript**. Si una vista merece salir
+en Google, tiene su ruta estática con el dato en el HTML.
+
+**Fuera de alcance:** cuentas de usuario, mapas por ciudad, coste de vida, imágenes de satélite,
+predicciones e IA (eso es el `ROADMAP.md`), y traducciones más allá de español e inglés.

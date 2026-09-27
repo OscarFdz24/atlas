@@ -4,9 +4,17 @@
 # No existe un modo "descargar todo el catálogo del Banco Mundial", y es
 # deliberado: sus términos advierten de que algunos indicadores proceden de
 # terceros y pueden no ser redistribuibles, y la API no expone esa condición
-# de forma legible por máquina. Por eso cada indicador se verifica a mano.
+# de forma legible por máquina.
 #
-# Antes de añadir uno, pasa la lista de comprobaciones de CLAUDE.md y rellena
+# Todos los indicadores de esta lista pertenecen a los World Development
+# Indicators (fuente 2 de la API), que el catálogo del Banco Mundial publica
+# como CC BY 4.0. La organización de origen de cada uno queda registrada en
+# `upstream_sources` y se cita en la interfaz.
+#
+# `higher_is_better` se deja vacío cuando "más" no es ni bueno ni malo.
+# Decidirlo sería un juicio de valor, no un dato.
+#
+# Antes de añadir uno: pasa la lista de comprobaciones de CLAUDE.md y rellena
 # `licence` y `licence_checked`. Sin esos dos campos, el pipeline lo rechaza.
 
 sources:
@@ -18,9 +26,11 @@ sources:
     attribution_format: "The World Bank: {dataset}: {source}"
 
 indicators:
+  # ---------------------------------------------------------------- Salud ---
   - id: life-expectancy
     source: worldbank
     code: SP.DYN.LE00.IN
+    theme: salud
     name_es: Esperanza de vida al nacer
     name_en: Life expectancy at birth
     description_es: >-
@@ -31,8 +41,336 @@ indicators:
     decimals: 1
     higher_is_better: true
     dataset: World Development Indicators
-    upstream_sources: >-
-      UN Population Division (World Population Prospects), national statistical
-      offices, Eurostat
+    upstream_sources: UN Population Division (World Population Prospects), Eurostat
     licence: CC BY 4.0
     licence_checked: 2026-09-20
+
+  - id: infant-mortality
+    source: worldbank
+    code: SP.DYN.IMRT.IN
+    theme: salud
+    name_es: Mortalidad infantil
+    name_en: Infant mortality rate
+    description_es: >-
+      Niños que mueren antes de cumplir un año por cada mil nacidos vivos.
+    unit_es: por cada 1.000 nacimientos
+    unit_en: per 1,000 live births
+    decimals: 1
+    higher_is_better: false
+    dataset: World Development Indicators
+    upstream_sources: UN Inter-agency Group for Child Mortality Estimation, UNICEF
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  - id: health-expenditure
+    source: worldbank
+    code: SH.XPD.CHEX.GD.ZS
+    theme: salud
+    name_es: Gasto sanitario
+    name_en: Current health expenditure
+    description_es: >-
+      Gasto total en sanidad, público y privado, como porcentaje del PIB.
+    unit_es: "% del PIB"
+    unit_en: "% of GDP"
+    decimals: 1
+    dataset: World Development Indicators
+    upstream_sources: Global Health Expenditure Database, World Health Organization (WHO)
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  - id: hospital-beds
+    source: worldbank
+    code: SH.MED.BEDS.ZS
+    theme: salud
+    name_es: Camas de hospital
+    name_en: Hospital beds
+    description_es: >-
+      Camas disponibles en hospitales públicos y privados por cada mil
+      habitantes.
+    unit_es: por cada 1.000 habitantes
+    unit_en: per 1,000 people
+    decimals: 1
+    higher_is_better: true
+    dataset: World Development Indicators
+    upstream_sources: World Health Organization (WHO), complementado con datos nacionales
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  # ------------------------------------------------------------ Población ---
+  - id: population
+    source: worldbank
+    code: SP.POP.TOTL
+    theme: poblacion
+    name_es: Población total
+    name_en: Population, total
+    description_es: >-
+      Número de residentes en el país, con independencia de su nacionalidad o
+      situación legal.
+    unit_es: habitantes
+    unit_en: people
+    decimals: 0
+    dataset: World Development Indicators
+    upstream_sources: UN Population Division (World Population Prospects)
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  - id: population-growth
+    source: worldbank
+    code: SP.POP.GROW
+    theme: poblacion
+    name_es: Crecimiento de la población
+    name_en: Population growth
+    description_es: >-
+      Variación anual de la población, en porcentaje.
+    unit_es: "% anual"
+    unit_en: "% annual"
+    decimals: 2
+    dataset: World Development Indicators
+    upstream_sources: UN Population Division (World Population Prospects)
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  - id: fertility-rate
+    source: worldbank
+    code: SP.DYN.TFRT.IN
+    theme: poblacion
+    name_es: Tasa de fecundidad
+    name_en: Fertility rate
+    description_es: >-
+      Hijos que tendría una mujer a lo largo de su vida si siguiera las tasas de
+      fecundidad actuales por edad.
+    unit_es: hijos por mujer
+    unit_en: births per woman
+    decimals: 2
+    dataset: World Development Indicators
+    upstream_sources: UN Population Division (World Population Prospects)
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  - id: population-65-plus
+    source: worldbank
+    code: SP.POP.65UP.TO.ZS
+    theme: poblacion
+    name_es: Población de 65 años o más
+    name_en: Population ages 65 and above
+    description_es: >-
+      Porcentaje de la población con 65 años o más. Es la medida habitual del
+      envejecimiento de un país.
+    unit_es: "% de la población"
+    unit_en: "% of population"
+    decimals: 1
+    dataset: World Development Indicators
+    upstream_sources: UN Population Division (World Population Prospects)
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  - id: urban-population
+    source: worldbank
+    code: SP.URB.TOTL.IN.ZS
+    theme: poblacion
+    name_es: Población urbana
+    name_en: Urban population
+    description_es: >-
+      Porcentaje de la población que vive en zonas urbanas, según la definición
+      de cada oficina estadística nacional.
+    unit_es: "% de la población"
+    unit_en: "% of population"
+    decimals: 1
+    dataset: World Development Indicators
+    upstream_sources: UN Population Division (World Urbanization Prospects)
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  # -------------------------------------------------------------- Economía ---
+  - id: gdp-per-capita
+    source: worldbank
+    code: NY.GDP.PCAP.PP.CD
+    theme: economia
+    name_es: PIB per cápita (PPA)
+    name_en: GDP per capita, PPP
+    description_es: >-
+      Producto interior bruto por habitante, ajustado por paridad de poder
+      adquisitivo para que sea comparable entre países.
+    unit_es: dólares internacionales
+    unit_en: international $
+    decimals: 0
+    higher_is_better: true
+    dataset: World Development Indicators
+    upstream_sources: International Comparison Program (ICP), World Bank
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  - id: gdp-growth
+    source: worldbank
+    code: NY.GDP.MKTP.KD.ZG
+    theme: economia
+    name_es: Crecimiento del PIB
+    name_en: GDP growth
+    description_es: >-
+      Variación anual del producto interior bruto a precios constantes.
+    unit_es: "% anual"
+    unit_en: "% annual"
+    decimals: 1
+    dataset: World Development Indicators
+    upstream_sources: Estadísticas oficiales nacionales y bancos centrales
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  - id: inflation
+    source: worldbank
+    code: FP.CPI.TOTL.ZG
+    theme: economia
+    name_es: Inflación
+    name_en: Inflation, consumer prices
+    description_es: >-
+      Variación anual del índice de precios al consumo.
+    unit_es: "% anual"
+    unit_en: "% annual"
+    decimals: 1
+    dataset: World Development Indicators
+    upstream_sources: International Financial Statistics, International Monetary Fund (IMF)
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  - id: unemployment
+    source: worldbank
+    code: SL.UEM.TOTL.ZS
+    theme: economia
+    name_es: Desempleo
+    name_en: Unemployment, total
+    description_es: >-
+      Porcentaje de la población activa sin empleo y disponible para trabajar.
+      Estimación modelizada de la OIT, no cifra oficial de cada país.
+    unit_es: "% de la población activa"
+    unit_en: "% of labor force"
+    decimals: 1
+    higher_is_better: false
+    dataset: World Development Indicators
+    upstream_sources: ILO Modelled Estimates (ILOEST), International Labour Organization
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  - id: gini-index
+    source: worldbank
+    code: SI.POV.GINI
+    theme: economia
+    name_es: Índice de Gini
+    name_en: Gini index
+    description_es: >-
+      Desigualdad en la distribución de la renta. 0 sería igualdad perfecta y
+      100 desigualdad máxima. Procede de encuestas de hogares, así que muchos
+      países solo tienen datos de algunos años.
+    unit_es: índice 0–100
+    unit_en: index 0–100
+    decimals: 1
+    higher_is_better: false
+    dataset: World Development Indicators
+    upstream_sources: World Bank Poverty and Inequality Platform
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  # --------------------------------------------------------------- Educación ---
+  - id: education-expenditure
+    source: worldbank
+    code: SE.XPD.TOTL.GD.ZS
+    theme: educacion
+    name_es: Gasto público en educación
+    name_en: Government expenditure on education
+    description_es: >-
+      Gasto público total en educación como porcentaje del PIB.
+    unit_es: "% del PIB"
+    unit_en: "% of GDP"
+    decimals: 1
+    dataset: World Development Indicators
+    upstream_sources: UNESCO Institute for Statistics
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  - id: literacy-rate
+    source: worldbank
+    code: SE.ADT.LITR.ZS
+    theme: educacion
+    name_es: Tasa de alfabetización
+    name_en: Literacy rate, adult total
+    description_es: >-
+      Porcentaje de personas de 15 años o más capaces de leer y escribir un
+      texto breve y sencillo sobre su vida cotidiana.
+    unit_es: "% de adultos"
+    unit_en: "% of adults"
+    decimals: 1
+    higher_is_better: true
+    dataset: World Development Indicators
+    upstream_sources: UNESCO Institute for Statistics
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  # ------------------------------------------- Infraestructura y tecnología ---
+  - id: internet-users
+    source: worldbank
+    code: IT.NET.USER.ZS
+    theme: tecnologia
+    name_es: Uso de internet
+    name_en: Individuals using the Internet
+    description_es: >-
+      Porcentaje de la población que ha usado internet en los últimos tres
+      meses, por cualquier dispositivo.
+    unit_es: "% de la población"
+    unit_en: "% of population"
+    decimals: 1
+    higher_is_better: true
+    dataset: World Development Indicators
+    upstream_sources: World Telecommunication/ICT Indicators Database, ITU
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  - id: electricity-access
+    source: worldbank
+    code: EG.ELC.ACCS.ZS
+    theme: tecnologia
+    name_es: Acceso a la electricidad
+    name_en: Access to electricity
+    description_es: >-
+      Porcentaje de la población con acceso a suministro eléctrico.
+    unit_es: "% de la población"
+    unit_en: "% of population"
+    decimals: 1
+    higher_is_better: true
+    dataset: World Development Indicators
+    upstream_sources: SDG 7.1.1 Electrification Dataset, World Bank
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  # ------------------------------------------------------ Medio ambiente ---
+  - id: co2-per-capita
+    source: worldbank
+    code: EN.GHG.CO2.PC.CE.AR5
+    theme: medioambiente
+    name_es: Emisiones de CO2 por habitante
+    name_en: CO2 emissions per capita
+    description_es: >-
+      Toneladas de dióxido de carbono emitidas por habitante y año, excluyendo
+      los cambios en el uso del suelo.
+    unit_es: toneladas por habitante
+    unit_en: tonnes per capita
+    decimals: 2
+    higher_is_better: false
+    dataset: World Development Indicators
+    upstream_sources: EDGAR Community GHG Database, Joint Research Centre (JRC)
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27
+
+  - id: forest-area
+    source: worldbank
+    code: AG.LND.FRST.ZS
+    theme: medioambiente
+    name_es: Superficie forestal
+    name_en: Forest area
+    description_es: >-
+      Porcentaje de la superficie terrestre cubierta por bosque.
+    unit_es: "% del territorio"
+    unit_en: "% of land area"
+    decimals: 1
+    dataset: World Development Indicators
+    upstream_sources: FAOSTAT, Food and Agriculture Organization (FAO)
+    licence: CC BY 4.0
+    licence_checked: 2026-09-27

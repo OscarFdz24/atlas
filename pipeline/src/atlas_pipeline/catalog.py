@@ -15,17 +15,20 @@ class Indicator:
     id: str
     source: str
     code: str
+    theme: str
     name_es: str
     name_en: str
     description_es: str
     unit_es: str
     unit_en: str
     decimals: int
-    higher_is_better: bool
     dataset: str
     upstream_sources: str
     licence: str
     licence_checked: str
+    # None where "more" is neither good nor bad (population, urbanisation).
+    # Claiming a direction there would be a value judgement, not a fact.
+    higher_is_better: bool | None = None
 
 
 @dataclass(frozen=True)

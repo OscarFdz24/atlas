@@ -5,7 +5,7 @@ from typing import Any
 import polars as pl
 
 from atlas_pipeline.catalog import Indicator, Source
-from atlas_pipeline.config import FIRST_YEAR, PROCESSED_DIR
+from atlas_pipeline.config import FIRST_YEAR, PROCESSED_DIR, REPO_ROOT
 from atlas_pipeline.schemas import CountrySchema, schema_for
 from atlas_pipeline.sources import worldbank
 
@@ -102,6 +102,59 @@ def build_indicator(
         "yearRange": [years[0], years[-1]],
         "countries": sorted(per_country, key=lambda c: c["code"]),
     }
+
+
+def write_web_bundle(indicators: list[Indicator], sources: dict[str, Source]) -> tuple[int, int]:
+    """Split the processed data the way the browser wants it: one small
+    catalogue loaded at startup, and one file per indicator fetched on demand.
+    Shipping all 20 series up front would be 2 MB before the globe draws.
+    """
+    out = REPO_ROOT / "web/public/data"
+    (out / "series").mkdir(parents=True, exist_ok=True)
+
+    catalog: dict[str, Any] = {"indicators": [], "countries": {}, "sources": {}}
+
+    for key, source in sources.items():
+        catalog["sources"][key] = {"name": source.name, "url": source.url, "terms": source.terms}
+
+    for indicator in indicators:
+        payload = json.loads(
+            (PROCESSED_DIR / "indicators" / f"{indicator.id}.json").read_text(encoding="utf-8")
+        )
+        series = {}
+        for row in payload["countries"]:
+            catalog["countries"].setdefault(
+                row["code"], {"name": row["name"], "region": row["region"]}
+            )
+            series[row["code"]] = {
+                y: round(v, indicator.decimals) for y, v in row["values"].items()
+            }
+
+        (out / "series" / f"{indicator.id}.json").write_text(
+            json.dumps(series, separators=(",", ":")), encoding="utf-8"
+        )
+        catalog["indicators"].append(
+            {
+                "id": indicator.id,
+                "theme": indicator.theme,
+                "name": indicator.name_es,
+                "unit": indicator.unit_es,
+                "decimals": indicator.decimals,
+                "higherIsBetter": indicator.higher_is_better,
+                "description": " ".join(indicator.description_es.split()),
+                "code": indicator.code,
+                "upstream": indicator.upstream_sources,
+                "licence": indicator.licence,
+                "years": payload["yearRange"],
+                "attribution": _attribution(sources[indicator.source], indicator),
+            }
+        )
+
+    catalog["countries"] = dict(sorted(catalog["countries"].items()))
+    (out / "catalog.json").write_text(
+        json.dumps(catalog, ensure_ascii=False, separators=(",", ":")), encoding="utf-8"
+    )
+    return len(catalog["indicators"]), len(catalog["countries"])
 
 
 def write_indicator(payload: dict[str, Any]) -> int:
